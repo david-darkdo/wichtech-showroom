@@ -16,9 +16,6 @@ export default function Navbar() {
         <span className="font-display text-sm text-gold-shimmer tracking-wider">WICHTECH</span>
       </Link>
       <div className="flex items-center gap-3">
-        <Link to="/admin" className="font-ui text-[10px] uppercase tracking-widest text-muted-foreground hover:text-accent transition-colors">
-          Admin
-        </Link>
         <CartSheet />
       </div>
     </nav>

@@ -67,9 +67,9 @@ export default function Footer() {
                 </div>
               ))}
             </div>
-            <p className="text-center font-ui text-[10px] text-muted-foreground/50 tracking-wider">
+            <a href="/system-login" className="block text-center font-ui text-[10px] text-muted-foreground/50 tracking-wider hover:text-muted-foreground/70 transition-colors cursor-pointer">
               © {new Date().getFullYear()} WICHTECH SHOWROOM. ALL RIGHTS RESERVED.
-            </p>
+            </a>
           </div>
         </div>
       </footer>
