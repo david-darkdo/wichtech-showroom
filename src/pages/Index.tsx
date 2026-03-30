@@ -13,6 +13,7 @@ export default function Index() {
       <Navbar />
       <main className="relative z-10">
         <HeroSection />
+        <WhoWeAre />
         <CategorySection />
         <StepGuide />
       </main>
