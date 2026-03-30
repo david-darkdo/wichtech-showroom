@@ -58,11 +58,11 @@ export default function CategorySection() {
 
               {/* Title below image */}
               <div className="py-3 px-2" style={{ background: 'hsl(220 15% 6%)' }}>
-                <h3 className="font-display text-base font-bold text-foreground leading-tight">
+                <h3 className="font-display text-base font-extrabold text-foreground leading-tight tracking-wide">
                   {cat.title}
                 </h3>
-                <p className="font-body text-xs text-muted-foreground mt-1">
-                  Category: {cat.name}
+                <p className="font-ui text-xs font-bold text-gold-shimmer mt-1 uppercase tracking-widest">
+                  {cat.name}
                 </p>
               </div>
             </motion.button>
