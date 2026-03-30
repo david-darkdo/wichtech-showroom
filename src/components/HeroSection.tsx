@@ -47,7 +47,7 @@ export default function HeroSection() {
           transition={{ delay: 0.3, duration: 0.8 }}
           className="text-gold-shimmer font-ui text-xs tracking-[0.35em] uppercase mb-4"
         >
-          Wichtech Showroom & Festoon Project Co.
+          Wichtech Showroom & Festoon Project Company
         </motion.p>
 
         {/* Main Title */}

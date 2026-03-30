@@ -13,7 +13,7 @@ export default function Footer() {
           {/* Company Info */}
           <div className="text-center">
             <h3 className="font-display text-xl text-gold-shimmer mb-2">Wichtech Showroom</h3>
-            <p className="font-body text-sm text-muted-foreground">& Festoon Project Co.</p>
+            <p className="font-body text-sm text-muted-foreground">& Festoon Project Company</p>
           </div>
 
           {/* Contact */}
