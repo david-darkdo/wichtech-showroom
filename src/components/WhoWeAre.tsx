@@ -82,7 +82,7 @@ export default function WhoWeAre() {
           transition={{ delay: 0.35, duration: 0.7 }}
           className="font-body text-base md:text-lg text-white/90 leading-relaxed mb-10"
         >
-          We are <span className="font-semibold text-gold-shimmer">Wichtech Showroom and Festoon Project Co.</span> We
+          We are <span className="font-semibold text-gold-shimmer">Wichtech Showroom and Festoon Project Company.</span> We
           don't just sell building materials; we provide the foundation for luxury.
         </motion.p>
 
