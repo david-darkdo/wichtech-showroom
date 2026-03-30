@@ -1,22 +1,57 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Users, BarChart3, Package, Upload, LogIn, LogOut, Eye, EyeOff } from 'lucide-react';
+import { Users, BarChart3, Package, Upload, LogOut, Eye, EyeOff, ShieldCheck, UserCog, MessageCircle } from 'lucide-react';
 import type { ProductCategory } from '@/lib/types';
 
-type Tab = 'products' | 'users' | 'analytics' | 'upload';
+type Tab = 'products' | 'users' | 'analytics' | 'upload' | 'staff' | 'customers';
 
 export default function AdminPage() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [session, setSession] = useState<any>(null);
+  const [role, setRole] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>('upload');
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setSession(session);
+      if (session?.user) {
+        // Check role
+        const { data } = await supabase
+          .from('user_roles' as any)
+          .select('role')
+          .eq('user_id', session.user.id)
+          .single();
+        setRole((data as any)?.role || null);
+      } else {
+        setRole(null);
+      }
+      setLoading(false);
+    });
+
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      setSession(session);
+      if (session?.user) {
+        const { data } = await supabase
+          .from('user_roles' as any)
+          .select('role')
+          .eq('user_id', session.user.id)
+          .single();
+        setRole((data as any)?.role || null);
+      }
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,8 +59,6 @@ export default function AdminPage() {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      setIsLoggedIn(true);
-      toast.success('Welcome, Admin');
     } catch (err: any) {
       toast.error(err.message || 'Login failed');
     } finally {
@@ -35,14 +68,23 @@ export default function AdminPage() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    setIsLoggedIn(false);
+    setSession(null);
+    setRole(null);
   };
 
-  if (!isLoggedIn) {
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="font-ui text-sm text-muted-foreground animate-pulse">Verifying access...</p>
+      </div>
+    );
+  }
+
+  if (!session) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
         <div className="w-full max-w-sm p-6 rounded-lg" style={{ background: 'hsl(220 15% 12%)', border: '1px solid hsl(42 30% 20% / 0.3)' }}>
-          <h1 className="font-display text-2xl text-gold-shimmer text-center mb-6">Admin Access</h1>
+          <h1 className="font-display text-2xl text-gold-shimmer text-center mb-6">System Access</h1>
           <form onSubmit={handleLogin} className="space-y-4">
             <Input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required className="bg-input border-border font-ui" />
             <div className="relative">
@@ -62,24 +104,50 @@ export default function AdminPage() {
     );
   }
 
+  const isSuperAdmin = role === 'super_admin';
+  const isStaff = role === 'staff';
+
+  if (!isSuperAdmin && !isStaff) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="text-center space-y-4">
+          <ShieldCheck className="w-16 h-16 mx-auto text-destructive/50" />
+          <h1 className="font-display text-xl text-foreground">Access Denied</h1>
+          <p className="font-body text-sm text-muted-foreground">You do not have permission to access the Command Center.</p>
+          <button onClick={handleLogout} className="font-ui text-xs text-accent underline">Sign Out</button>
+        </div>
+      </div>
+    );
+  }
+
+  const tabs = [
+    { id: 'upload' as Tab, icon: Upload, label: 'Upload' },
+    { id: 'products' as Tab, icon: Package, label: 'Products' },
+    ...(isSuperAdmin ? [
+      { id: 'staff' as Tab, icon: UserCog, label: 'Staff' },
+      { id: 'customers' as Tab, icon: MessageCircle, label: 'Customers' },
+      { id: 'users' as Tab, icon: Users, label: 'Emails' },
+      { id: 'analytics' as Tab, icon: BarChart3, label: 'Analytics' },
+    ] : []),
+  ];
+
   return (
     <div className="min-h-screen px-4 py-6">
       <div className="max-w-lg mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="font-display text-xl text-gold-shimmer">Command Center</h1>
+          <div>
+            <h1 className="font-display text-xl text-gold-shimmer">Command Center</h1>
+            <p className="font-ui text-[10px] text-accent/60 uppercase tracking-widest mt-1">
+              {isSuperAdmin ? 'Super Admin' : 'Staff'}
+            </p>
+          </div>
           <button onClick={handleLogout} className="text-muted-foreground hover:text-accent transition-colors">
             <LogOut className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Tabs */}
         <div className="flex gap-1 mb-6 overflow-x-auto">
-          {([
-            { id: 'upload' as Tab, icon: Upload, label: 'Upload' },
-            { id: 'products' as Tab, icon: Package, label: 'Products' },
-            { id: 'users' as Tab, icon: Users, label: 'Users' },
-            { id: 'analytics' as Tab, icon: BarChart3, label: 'Analytics' },
-          ]).map(tab => (
+          {tabs.map(tab => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -94,8 +162,151 @@ export default function AdminPage() {
 
         {activeTab === 'upload' && <ProductUploader />}
         {activeTab === 'products' && <ProductList />}
-        {activeTab === 'users' && <UserList />}
-        {activeTab === 'analytics' && <Analytics />}
+        {activeTab === 'staff' && isSuperAdmin && <StaffManager />}
+        {activeTab === 'customers' && isSuperAdmin && <CustomerTracker />}
+        {activeTab === 'users' && isSuperAdmin && <UserList />}
+        {activeTab === 'analytics' && isSuperAdmin && <Analytics />}
+      </div>
+    </div>
+  );
+}
+
+// ============ Staff Manager ============
+function StaffManager() {
+  const queryClient = useQueryClient();
+
+  const { data: roles = [] } = useQuery({
+    queryKey: ['all-user-roles'],
+    queryFn: async () => {
+      const { data } = await supabase.from('user_roles' as any).select('*');
+      return (data || []) as any[];
+    },
+  });
+
+  const { data: profiles = [] } = useQuery({
+    queryKey: ['all-profiles'],
+    queryFn: async () => {
+      const { data } = await supabase.from('profiles' as any).select('*').order('created_at', { ascending: false });
+      return (data || []) as any[];
+    },
+  });
+
+  const promoteUser = useMutation({
+    mutationFn: async ({ userId, newRole }: { userId: string; newRole: string }) => {
+      // Delete existing role then insert new one
+      await supabase.from('user_roles' as any).delete().eq('user_id', userId);
+      const { error } = await supabase.from('user_roles' as any).insert({ user_id: userId, role: newRole } as any);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-user-roles'] });
+      toast.success('Role updated');
+    },
+    onError: (err: any) => toast.error(err.message),
+  });
+
+  const getUserRole = (userId: string) => {
+    const r = roles.find((r: any) => r.user_id === userId);
+    return r?.role || 'customer';
+  };
+
+  return (
+    <div className="space-y-4">
+      <h2 className="font-display text-lg text-foreground">Manage Staff</h2>
+      <p className="font-ui text-xs text-muted-foreground">Promote or demote users. Only super admins can manage roles.</p>
+
+      <div className="space-y-3">
+        {profiles.map((p: any) => {
+          const currentRole = getUserRole(p.user_id);
+          return (
+            <div key={p.id} className="p-3 rounded-lg flex items-center justify-between gap-3"
+              style={{ background: 'hsl(220 15% 12%)', border: '1px solid hsl(42 30% 20% / 0.2)' }}
+            >
+              <div className="flex-1 min-w-0">
+                <p className="font-ui text-sm text-foreground truncate">{p.email}</p>
+                <p className="font-ui text-[10px] text-accent uppercase tracking-widest">{currentRole}</p>
+              </div>
+              <div className="flex gap-1">
+                {currentRole !== 'staff' && (
+                  <button
+                    onClick={() => promoteUser.mutate({ userId: p.user_id, newRole: 'staff' })}
+                    className="px-2 py-1 rounded text-[10px] font-ui uppercase tracking-wider"
+                    style={{ background: 'hsl(42 70% 55% / 0.15)', color: 'hsl(42 70% 55%)', border: '1px solid hsl(42 70% 55% / 0.3)' }}
+                  >
+                    Make Staff
+                  </button>
+                )}
+                {currentRole === 'staff' && (
+                  <button
+                    onClick={() => promoteUser.mutate({ userId: p.user_id, newRole: 'customer' })}
+                    className="px-2 py-1 rounded text-[10px] font-ui uppercase tracking-wider"
+                    style={{ background: 'hsl(0 60% 35% / 0.15)', color: 'hsl(0 60% 50%)', border: '1px solid hsl(0 60% 35% / 0.3)' }}
+                  >
+                    Remove Staff
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
+        {profiles.length === 0 && (
+          <p className="font-ui text-sm text-muted-foreground text-center py-8">No users yet</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ============ Customer Tracker ============
+function CustomerTracker() {
+  const { data: profiles = [] } = useQuery({
+    queryKey: ['customer-profiles'],
+    queryFn: async () => {
+      const { data } = await supabase.from('profiles' as any).select('*').order('last_seen', { ascending: false });
+      return (data || []) as any[];
+    },
+  });
+
+  const { data: whatsappLogs = [] } = useQuery({
+    queryKey: ['whatsapp-logs'],
+    queryFn: async () => {
+      const { data } = await supabase.from('activity_logs' as any).select('user_email').eq('action', 'whatsapp_checkout');
+      return (data || []) as any[];
+    },
+  });
+
+  const whatsappEmails = new Set(whatsappLogs.map((l: any) => l.user_email));
+
+  return (
+    <div className="space-y-4">
+      <h2 className="font-display text-lg text-foreground">Customer Tracker</h2>
+      <p className="font-ui text-xs text-muted-foreground">Track user activity and WhatsApp engagement.</p>
+
+      <div className="space-y-2">
+        {/* Header */}
+        <div className="grid grid-cols-3 gap-2 px-3 py-2">
+          <span className="font-ui text-[10px] uppercase tracking-widest text-accent">Email</span>
+          <span className="font-ui text-[10px] uppercase tracking-widest text-accent text-center">Last Seen</span>
+          <span className="font-ui text-[10px] uppercase tracking-widest text-accent text-right">WhatsApp</span>
+        </div>
+
+        {profiles.map((p: any) => (
+          <div key={p.id} className="grid grid-cols-3 gap-2 p-3 rounded-lg items-center"
+            style={{ background: 'hsl(220 15% 12%)', border: '1px solid hsl(42 30% 20% / 0.15)' }}
+          >
+            <p className="font-ui text-xs text-foreground truncate">{p.email || 'Unknown'}</p>
+            <p className="font-ui text-[10px] text-muted-foreground text-center">
+              {p.last_seen ? new Date(p.last_seen).toLocaleDateString() : 'N/A'}
+            </p>
+            <p className={`font-ui text-[10px] text-right font-bold uppercase tracking-wider ${whatsappEmails.has(p.email) ? 'text-green-400' : 'text-muted-foreground/40'}`}>
+              {whatsappEmails.has(p.email) ? 'Yes' : 'No'}
+            </p>
+          </div>
+        ))}
+
+        {profiles.length === 0 && (
+          <p className="font-ui text-sm text-muted-foreground text-center py-8">No customers tracked yet</p>
+        )}
       </div>
     </div>
   );
