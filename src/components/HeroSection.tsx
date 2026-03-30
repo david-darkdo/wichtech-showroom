@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import wichtechLogo from '@/assets/wichtech-logo.jpg';
+import wichtechLogo from '@/assets/wichtech-logo.png';
 
 export default function HeroSection() {
   const navigate = useNavigate();

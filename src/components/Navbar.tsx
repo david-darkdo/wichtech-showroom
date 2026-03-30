@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import CartSheet from './CartSheet';
+import wichtechLogo from '@/assets/wichtech-logo.png';
 
 export default function Navbar() {
   return (
@@ -10,8 +11,9 @@ export default function Navbar() {
         borderBottom: '1px solid hsl(42 30% 20% / 0.15)',
       }}
     >
-      <Link to="/" className="font-display text-sm text-gold-shimmer tracking-wider">
-        WICHTECH
+      <Link to="/" className="flex items-center gap-2">
+        <img src={wichtechLogo} alt="Wichtech" className="w-8 h-8 object-contain" />
+        <span className="font-display text-sm text-gold-shimmer tracking-wider">WICHTECH</span>
       </Link>
       <div className="flex items-center gap-3">
         <Link to="/admin" className="font-ui text-[10px] uppercase tracking-widest text-muted-foreground hover:text-accent transition-colors">
