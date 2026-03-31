@@ -1,14 +1,13 @@
 import { motion } from 'framer-motion';
-import wichtechLogo from '@/assets/wichtech-logo.png';
 
 const reasons = [
   {
     title: 'Uncompromising Quality',
-    desc: "If it's not Wichtech, it's not premium. We only provide materials that are tested and trusted by professionals.",
+    desc: "If it's not Wichtech, it's not premium product. We provide materials that are tested and trusted by professionals eg: Nigerian Institute of Architects, Standard Organization, COREN, etc.",
   },
   {
     title: 'Sovereign Strength',
-    desc: 'Our products—from Zinc roofing to Luxury plumbing—are built to last and designed to impress.',
+    desc: 'Our products—from roofing sheet to Luxury sanitary and plumbing, cables and wire, and paints—are built to last and designed to impress.',
   },
   {
     title: "The Professional's Choice",
@@ -35,15 +34,13 @@ export default function WhoWeAre() {
         }}
       />
 
-      {/* Watermark seal */}
+      {/* Watermark seal - W logo */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <img
-          src={wichtechLogo}
-          alt=""
-          aria-hidden="true"
-          className="w-64 h-64 object-contain opacity-[0.06]"
-          style={{ filter: 'sepia(1) saturate(3) hue-rotate(10deg) brightness(1.2)' }}
-        />
+        <div className="w-48 h-48 flex items-center justify-center rounded-full opacity-[0.06]"
+          style={{ border: '4px solid hsl(42 70% 55%)', background: 'hsl(42 70% 55% / 0.05)' }}
+        >
+          <span className="font-display text-8xl font-bold" style={{ color: 'hsl(42 70% 55%)', fontStyle: 'italic' }}>W</span>
+        </div>
       </div>
 
       <div className="relative z-10 max-w-3xl mx-auto text-center">
@@ -61,7 +58,7 @@ export default function WhoWeAre() {
             filter: 'drop-shadow(0 2px 6px hsl(42 70% 55% / 0.3))',
           }}
         >
-          Who We Are
+          WE ARE
         </motion.h2>
 
         <motion.p
@@ -71,7 +68,7 @@ export default function WhoWeAre() {
           transition={{ delay: 0.2, duration: 0.7 }}
           className="font-body text-sm text-gold-shimmer tracking-widest uppercase mb-8"
         >
-          The Standard of Excellence
+          THE STANDARD OF EXCELLENCE one stop "n" shop
         </motion.p>
 
         {/* Intro */}
@@ -82,8 +79,8 @@ export default function WhoWeAre() {
           transition={{ delay: 0.35, duration: 0.7 }}
           className="font-body text-base md:text-lg text-white/90 leading-relaxed mb-10"
         >
-          We are <span className="font-semibold text-gold-shimmer">Wichtech Showroom and Festoon Project Company.</span> We
-          don't just sell building materials; we provide the foundation for luxury.
+          We are <span className="font-semibold text-gold-shimmer">Wichtech Festoon Project Showroom.</span>{' '}
+          We don't just sell building materials; we provide the foundation for luxury.
         </motion.p>
 
         {/* Why Choose Us */}
@@ -94,7 +91,7 @@ export default function WhoWeAre() {
           transition={{ delay: 0.45, duration: 0.7 }}
           className="font-display text-xl font-bold text-gold-shimmer mb-6"
         >
-          Why Choose Us?
+          Why Choose Wichtech?
         </motion.h3>
 
         <div className="space-y-6 text-left">
@@ -127,7 +124,7 @@ export default function WhoWeAre() {
             WebkitTextFillColor: 'transparent',
           }}
         >
-          Maintaining Standard. Always.
+          Mantaining Standerd. Always.
         </motion.p>
       </div>
     </section>

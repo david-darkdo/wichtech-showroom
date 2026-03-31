@@ -1,16 +1,16 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import type { ProductCategory } from '@/lib/types';
-import categoryPaint from '@/assets/category-paint.jpg';
-import categoryPlumbing from '@/assets/category-plumbing.jpg';
-import categoryElectrical from '@/assets/category-electrical.jpg';
-import categoryRoofing from '@/assets/category-roofing.jpg';
+import productRoofing from '@/assets/product-1.jpeg';
+import productPaint from '@/assets/product-2.jpeg';
+import productElectrical from '@/assets/product-3.jpeg';
+import productPlumbing from '@/assets/product-4.jpeg';
 
 const categories: { name: ProductCategory; title: string; image: string }[] = [
-  { name: 'Paint', title: 'Premium Paint', image: categoryPaint },
-  { name: 'Plumbing', title: 'Luxury Bathroom System', image: categoryPlumbing },
-  { name: 'Electrical', title: 'Designer Electrical Solutions', image: categoryElectrical },
-  { name: 'Roofing', title: 'Architectural Zinc Roofing', image: categoryRoofing },
+  { name: 'Roofing', title: 'Architectural Zinc Roofing', image: productRoofing },
+  { name: 'Paint', title: 'Premium Paint', image: productPaint },
+  { name: 'Electrical', title: 'Designer Electrical Solutions', image: productElectrical },
+  { name: 'Plumbing', title: 'Luxury Bathroom System', image: productPlumbing },
 ];
 
 export default function CategorySection() {
@@ -23,12 +23,22 @@ export default function CategorySection() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-center font-display text-2xl text-gold-shimmer mb-8"
+          className="text-center font-display text-2xl text-gold-shimmer mb-2"
         >
           Our Collections
         </motion.h2>
 
-        <div className="grid grid-cols-2 gap-4">
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="text-center font-body text-sm text-foreground/70 mb-8 max-w-md mx-auto leading-relaxed"
+        >
+          Premium building materials — plumbing, paint, electrical & roofing — curated for excellence.
+        </motion.p>
+
+        <div className="space-y-6">
           {categories.map((cat, i) => (
             <motion.button
               key={cat.name}
@@ -36,34 +46,36 @@ export default function CategorySection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.5 }}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => navigate(`/category/${cat.name}`)}
-              className="relative rounded-xl overflow-hidden text-center group"
+              className="relative w-full rounded-xl overflow-hidden text-left group block"
               style={{
                 boxShadow: '0 8px 30px -5px hsl(0 0% 0% / 0.6)',
               }}
             >
+              {/* Category label on top */}
+              <div className="py-2 px-4" style={{ background: 'hsl(220 15% 10%)' }}>
+                <p className="font-ui text-xs font-bold text-gold-shimmer uppercase tracking-widest">
+                  {cat.name}
+                </p>
+              </div>
+
               {/* Image */}
-              <div className="aspect-[3/4] overflow-hidden">
+              <div className="aspect-[16/9] overflow-hidden">
                 <img
                   src={cat.image}
                   alt={cat.title}
                   loading="lazy"
-                  width={512}
-                  height={640}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
               </div>
 
               {/* Title below image */}
-              <div className="py-3 px-2" style={{ background: 'hsl(220 15% 6%)' }}>
+              <div className="py-3 px-4" style={{ background: 'hsl(220 15% 6%)' }}>
                 <h3 className="font-display text-base font-extrabold text-foreground leading-tight tracking-wide">
                   {cat.title}
                 </h3>
-                <p className="font-ui text-xs font-bold text-gold-shimmer mt-1 uppercase tracking-widest">
-                  {cat.name}
-                </p>
               </div>
             </motion.button>
           ))}
