@@ -1,11 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import wichtechLogo from '@/assets/wichtech-logo.png';
 
 export default function HeroSection() {
-  const navigate = useNavigate();
-
   return (
     <section className="relative h-screen min-h-[600px] overflow-hidden">
       {/* Background Video */}
@@ -25,19 +21,19 @@ export default function HeroSection() {
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 text-center">
-        {/* Logo */}
+        {/* Logo recreation */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: 'easeOut' }}
-          className="mb-6"
+          className="mb-6 flex items-center h-12 rounded overflow-hidden shadow-xl"
         >
-          <img
-            src={wichtechLogo}
-            alt="Wichtech Logo"
-            className="w-20 h-auto mx-auto drop-shadow-lg"
-            style={{ filter: 'drop-shadow(0 0 15px hsl(42 70% 55% / 0.3))' }}
-          />
+          <div className="flex items-center justify-center h-full px-5" style={{ background: 'hsl(0 60% 28%)' }}>
+            <span className="font-display text-3xl font-bold text-white" style={{ fontStyle: 'italic' }}>W</span>
+          </div>
+          <div className="flex items-center justify-center h-full px-5" style={{ background: 'hsl(216 56% 20%)' }}>
+            <span className="font-display text-lg text-white tracking-wider font-semibold">Wichtech</span>
+          </div>
         </motion.div>
 
         {/* Company Name */}
@@ -47,7 +43,7 @@ export default function HeroSection() {
           transition={{ delay: 0.3, duration: 0.8 }}
           className="text-gold-shimmer font-ui text-xs tracking-[0.35em] uppercase mb-4"
         >
-          Wichtech Showroom & Festoon Project Company
+          Wichtech Festoon Project Showroom
         </motion.p>
 
         {/* Main Title */}
@@ -55,21 +51,11 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 1 }}
-          className="font-display text-4xl md:text-6xl font-bold mb-4"
+          className="font-display text-4xl md:text-6xl font-bold mb-8"
         >
-          <span className="text-crimson-sheen">Maintaining</span>{' '}
-          <span className="text-gold-shimmer">Standard</span>
+          <span className="text-crimson-sheen">Mantaining</span>{' '}
+          <span className="text-gold-shimmer">Standerd</span>
         </motion.h1>
-
-        {/* Description */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.8 }}
-          className="font-body text-lg text-foreground/70 max-w-md mb-8 leading-relaxed"
-        >
-          Premium building materials — plumbing, paint, electrical & roofing — curated for excellence.
-        </motion.p>
 
         {/* CTA Button */}
         <motion.button

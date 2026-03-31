@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import CartSheet from './CartSheet';
-import wichtechLogo from '@/assets/wichtech-logo.png';
 
 export default function Navbar() {
   return (
@@ -11,9 +10,15 @@ export default function Navbar() {
         borderBottom: '1px solid hsl(42 30% 20% / 0.15)',
       }}
     >
-      <Link to="/" className="flex items-center gap-2">
-        <img src={wichtechLogo} alt="Wichtech" className="w-8 h-8 object-contain" />
-        <span className="font-display text-sm text-gold-shimmer tracking-wider">WICHTECH</span>
+      <Link to="/" className="flex items-center h-9 rounded overflow-hidden shadow-lg">
+        {/* Red section with W logo */}
+        <div className="flex items-center justify-center h-full px-3" style={{ background: 'hsl(0 60% 28%)' }}>
+          <span className="font-display text-xl font-bold text-white tracking-tight" style={{ fontStyle: 'italic' }}>W</span>
+        </div>
+        {/* Dark blue section with Wichtech text */}
+        <div className="flex items-center justify-center h-full px-3" style={{ background: 'hsl(216 56% 20%)' }}>
+          <span className="font-display text-sm text-white tracking-wider font-semibold">Wichtech</span>
+        </div>
       </Link>
       <div className="flex items-center gap-3">
         <CartSheet />
