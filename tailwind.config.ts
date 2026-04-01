@@ -102,12 +102,37 @@ export default {
           "0%": { opacity: "0", transform: "scale(0.95)" },
           "100%": { opacity: "1", transform: "scale(1)" },
         },
+        "wichtech-pulse": {
+          "0%, 100%": { opacity: "1", transform: "scale(1)" },
+          "50%": { opacity: "0.4", transform: "scale(0.92)" },
+        },
+        "wichtech-ring": {
+          "0%, 100%": { opacity: "0.2", transform: "scale(1)" },
+          "50%": { opacity: "0.6", transform: "scale(1.3)" },
+        },
+        "wichtech-dot1": {
+          "0%, 80%, 100%": { opacity: "0.2" },
+          "40%": { opacity: "1" },
+        },
+        "wichtech-dot2": {
+          "0%, 80%, 100%": { opacity: "0.2" },
+          "50%": { opacity: "1" },
+        },
+        "wichtech-dot3": {
+          "0%, 80%, 100%": { opacity: "0.2" },
+          "60%": { opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.6s ease-out forwards",
         "scale-in": "scale-in 0.4s ease-out forwards",
+        "wichtech-pulse": "wichtech-pulse 1.8s ease-in-out infinite",
+        "wichtech-ring": "wichtech-ring 1.8s ease-in-out infinite",
+        "wichtech-dot1": "wichtech-dot1 1.4s ease-in-out infinite",
+        "wichtech-dot2": "wichtech-dot2 1.4s ease-in-out infinite 0.2s",
+        "wichtech-dot3": "wichtech-dot3 1.4s ease-in-out infinite 0.4s",
       },
     },
   },
