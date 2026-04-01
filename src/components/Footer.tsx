@@ -18,9 +18,9 @@ export default function Footer() {
 
           {/* Contact */}
           <div className="space-y-3">
-            <a href="mailto:wichtech@company.com" className="flex items-center gap-3 text-sm font-body text-muted-foreground hover:text-accent transition-colors">
+            <a href="mailto:wichtechfestoonproject@gmail.com" className="flex items-center gap-3 text-sm font-body text-muted-foreground hover:text-accent transition-colors">
               <Mail className="w-4 h-4 text-accent" />
-              wichtech@company.com
+              wichtechfestoonproject@gmail.com
             </a>
             <a href="tel:+2348066886521" className="flex items-center gap-3 text-sm font-body text-muted-foreground hover:text-accent transition-colors">
               <Phone className="w-4 h-4 text-accent" />

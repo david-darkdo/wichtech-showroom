@@ -7,10 +7,10 @@ import productElectrical from '@/assets/product-3.jpeg';
 import productPlumbing from '@/assets/product-4.jpeg';
 
 const categories: { name: ProductCategory; title: string; image: string }[] = [
-  { name: 'Roofing', title: 'Architectural Zinc Roofing', image: productRoofing },
-  { name: 'Paint', title: 'Premium Paint', image: productPaint },
-  { name: 'Electrical', title: 'Designer Electrical Solutions', image: productElectrical },
-  { name: 'Plumbing', title: 'Luxury Bathroom System', image: productPlumbing },
+  { name: 'Roofing', title: 'Wichtech Roofing Tiles & Sheets', image: productRoofing },
+  { name: 'Paint', title: 'Wichtech Betek Premium Paint', image: productPaint },
+  { name: 'Electrical', title: 'Wichtech Biahama Light Solutions', image: productElectrical },
+  { name: 'Plumbing', title: 'Wichflow Luxury Bathroom System', image: productPlumbing },
 ];
 
 export default function CategorySection() {

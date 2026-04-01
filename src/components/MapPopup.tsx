@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { MapPin } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { MapPin, Loader2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 interface MapPopupProps {
   open: boolean;
@@ -10,9 +10,11 @@ interface MapPopupProps {
 export default function MapPopup({ open, onClose }: MapPopupProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!open || !mapRef.current) return;
+    setLoading(true);
 
     const initMap = async () => {
       const L = await import('leaflet');
@@ -22,7 +24,7 @@ export default function MapPopup({ open, onClose }: MapPopupProps) {
         mapInstance.current.remove();
       }
 
-      const map = L.map(mapRef.current!, { zoomControl: false }).setView([9.1104647, 7.2638260], 15);
+      const map = L.map(mapRef.current!, { zoomControl: true }).setView([9.1104647, 7.2638260], 15);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap',
       }).addTo(map);
@@ -35,16 +37,22 @@ export default function MapPopup({ open, onClose }: MapPopupProps) {
       });
 
       L.marker([9.1104647, 7.2638260], { icon }).addTo(map)
-        .bindPopup('<b>Wichtech Showroom</b><br/>Dei Dei, Abuja')
+        .bindPopup('<b>Wichtech Showroom</b><br/>& Festoon Project Company<br/>Dei Dei, Abuja')
         .openPopup();
 
       mapInstance.current = map;
-      setTimeout(() => map.invalidateSize(), 100);
+
+      map.whenReady(() => {
+        setLoading(false);
+        map.invalidateSize();
+      });
     };
 
-    setTimeout(initMap, 100);
+    // Small delay for dialog animation
+    const timer = setTimeout(initMap, 200);
 
     return () => {
+      clearTimeout(timer);
       if (mapInstance.current) {
         mapInstance.current.remove();
         mapInstance.current = null;
@@ -61,7 +69,15 @@ export default function MapPopup({ open, onClose }: MapPopupProps) {
             Our Location
           </DialogTitle>
         </DialogHeader>
-        <div ref={mapRef} className="w-full h-64 rounded-lg bg-muted" />
+        <div className="relative">
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-lg z-10">
+              <Loader2 className="w-6 h-6 text-accent animate-spin" />
+              <span className="ml-2 text-sm text-muted-foreground font-body">Loading map...</span>
+            </div>
+          )}
+          <div ref={mapRef} className="w-full h-64 rounded-lg bg-muted" />
+        </div>
         <p className="font-body text-sm text-muted-foreground">
           Dei Dei, Abuja, Nigeria — Visit our showroom for a premium in-person experience.
         </p>
