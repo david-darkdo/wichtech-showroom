@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import wichtechLogo from '@/assets/wichtech-logo.png';
 
 export default function HeroSection() {
   return (
@@ -21,15 +22,15 @@ export default function HeroSection() {
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full px-4 text-center">
-        {/* Logo recreation */}
+        {/* Logo */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: 'easeOut' }}
           className="mb-6 flex items-center h-12 rounded overflow-hidden shadow-xl"
         >
-          <div className="flex items-center justify-center h-full px-5" style={{ background: 'hsl(0 60% 28%)' }}>
-            <span className="font-display text-3xl font-bold text-white" style={{ fontStyle: 'italic' }}>W</span>
+          <div className="flex items-center justify-center h-full px-3" style={{ background: 'hsl(0 60% 28%)' }}>
+            <img src={wichtechLogo} alt="Wichtech" className="h-9 w-auto" />
           </div>
           <div className="flex items-center justify-center h-full px-5" style={{ background: 'hsl(216 56% 20%)' }}>
             <span className="font-display text-lg text-white tracking-wider font-semibold">Wichtech</span>
