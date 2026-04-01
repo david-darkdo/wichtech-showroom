@@ -29,8 +29,8 @@ export default function HeroSection() {
           transition={{ duration: 1, ease: 'easeOut' }}
           className="mb-6 flex items-center h-12 rounded overflow-hidden shadow-xl"
         >
-          <div className="flex items-center justify-center h-full px-3" style={{ background: 'hsl(0 60% 28%)' }}>
-            <img src={wichtechLogo} alt="Wichtech" className="h-9 w-auto" />
+          <div className="flex items-center justify-center h-full px-3">
+            <img src={wichtechLogo} alt="Wichtech" className="h-10 w-auto rounded-sm" />
           </div>
           <div className="flex items-center justify-center h-full px-5" style={{ background: 'hsl(216 56% 20%)' }}>
             <span className="font-display text-lg text-white tracking-wider font-semibold">Wichtech</span>

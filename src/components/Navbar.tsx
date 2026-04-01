@@ -13,8 +13,8 @@ export default function Navbar() {
     >
       <Link to="/" className="flex items-center h-9 rounded overflow-hidden shadow-lg">
         {/* Red section with logo icon */}
-        <div className="flex items-center justify-center h-full px-2" style={{ background: 'hsl(0 60% 28%)' }}>
-          <img src={wichtechLogo} alt="Wichtech" className="h-7 w-auto" />
+        <div className="flex items-center justify-center h-full px-2">
+          <img src={wichtechLogo} alt="Wichtech" className="h-9 w-auto rounded-sm" />
         </div>
         {/* Dark blue section with Wichtech text */}
         <div className="flex items-center justify-center h-full px-3" style={{ background: 'hsl(216 56% 20%)' }}>
