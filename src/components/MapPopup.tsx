@@ -79,7 +79,7 @@ export default function MapPopup({ open, onClose }: MapPopupProps) {
           <div ref={mapRef} className="w-full h-64 rounded-lg bg-muted" />
         </div>
         <p className="font-body text-sm text-muted-foreground">
-          Dei Dei, Abuja, Nigeria — Visit our showroom for a premium in-person experience.
+          Wichtech Festoon Project Plaza, opposite IBB Plaza, before Dei Dei International Market, FCT Abuja, Nigeria.
         </p>
       </DialogContent>
     </Dialog>
