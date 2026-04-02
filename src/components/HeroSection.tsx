@@ -55,7 +55,7 @@ export default function HeroSection() {
           className="font-display text-4xl md:text-6xl font-bold mb-8"
         >
           <span className="text-crimson-sheen">Mantaining</span>{' '}
-          <span className="text-gold-shimmer">Standerd</span>
+          <span className="text-gold-shimmer">Standard</span>
         </motion.h1>
 
         {/* CTA Button */}
