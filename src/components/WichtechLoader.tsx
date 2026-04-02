@@ -10,12 +10,7 @@ export default function WichtechLoader() {
             src={wichtechLogo}
             alt="Loading..."
             className="h-16 w-auto animate-wichtech-pulse"
-          />
-          {/* Glow ring behind logo */}
-          <div className="absolute inset-0 -m-3 rounded-full animate-wichtech-ring"
-            style={{
-              background: 'radial-gradient(circle, hsl(0 60% 28% / 0.3) 0%, transparent 70%)',
-            }}
+            style={{ filter: 'brightness(0) invert(1)' }}
           />
         </div>
         {/* Subtle loading dots */}
