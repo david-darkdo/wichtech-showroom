@@ -71,7 +71,7 @@ export default function Footer() {
               ))}
             </div>
             <a href="/system-login" className="block text-center font-ui text-[10px] text-muted-foreground/50 tracking-wider hover:text-muted-foreground/70 transition-colors cursor-pointer">
-              © {new Date().getFullYear()} WICHTECH SHOWROOM. ALL RIGHTS RESERVED.
+              © {new Date().getFullYear()} WICHTECH FESTOON PROJECT SHOWROOM. ALL RIGHTS RESERVED.
             </a>
           </div>
         </div>
