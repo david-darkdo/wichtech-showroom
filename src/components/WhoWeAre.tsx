@@ -66,9 +66,9 @@ export default function WhoWeAre() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2, duration: 0.7 }}
-          className="font-body text-sm text-gold-shimmer tracking-widest uppercase mb-8"
+          className="font-body text-sm text-gold-shimmer tracking-widest mb-8"
         >
-          THE STANDARD OF EXCELLENCE one stop "n" shop
+          THE STANDARD OF EXCELLENCE ONE STOP "n" SHOP
         </motion.p>
 
         {/* Intro */}
