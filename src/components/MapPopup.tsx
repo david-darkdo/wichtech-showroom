@@ -24,7 +24,7 @@ export default function MapPopup({ open, onClose }: MapPopupProps) {
         mapInstance.current.remove();
       }
 
-      const map = L.map(mapRef.current!, { zoomControl: true }).setView([9.1104647, 7.2638260], 15);
+      const map = L.map(mapRef.current!, { zoomControl: true }).setView([9.1104647, 7.2638260], 17);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap',
       }).addTo(map);
