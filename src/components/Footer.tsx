@@ -12,7 +12,8 @@ export default function Footer() {
         <div className="max-w-lg mx-auto space-y-8">
           {/* Company Info */}
           <div className="text-center">
-            <h3 className="font-display text-xl text-gold-shimmer mb-2">Wichtech Festoon Project ShowRoom</h3>
+            <h3 className="font-display text-xl text-gold-shimmer mb-2">Wichtech Showroom</h3>
+            <p className="font-body text-sm text-muted-foreground">& Festoon Project Company</p>
           </div>
 
           {/* Contact */}
@@ -24,10 +25,6 @@ export default function Footer() {
             <a href="tel:+2348066886521" className="flex items-center gap-3 text-sm font-body text-muted-foreground hover:text-accent transition-colors">
               <Phone className="w-4 h-4 text-accent" />
               +234 806 688 6521
-            </a>
-            <a href="tel:+23407044915219" className="flex items-center gap-3 text-sm font-body text-muted-foreground hover:text-accent transition-colors">
-              <Phone className="w-4 h-4 text-accent" />
-              070 4491 5219
             </a>
             <button
               onClick={() => setShowMap(true)}
@@ -71,7 +68,7 @@ export default function Footer() {
               ))}
             </div>
             <a href="/system-login" className="block text-center font-ui text-[10px] text-muted-foreground/50 tracking-wider hover:text-muted-foreground/70 transition-colors cursor-pointer">
-              © {new Date().getFullYear()} WICHTECH FESTOON PROJECT SHOWROOM. ALL RIGHTS RESERVED.
+              © {new Date().getFullYear()} WICHTECH SHOWROOM. ALL RIGHTS RESERVED.
             </a>
           </div>
         </div>

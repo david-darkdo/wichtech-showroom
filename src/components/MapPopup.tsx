@@ -37,7 +37,7 @@ export default function MapPopup({ open, onClose }: MapPopupProps) {
       });
 
       L.marker([9.1104647, 7.2638260], { icon }).addTo(map)
-        .bindPopup('<b>Wichtech Festoon Project ShowRoom</b><br/>Opposite IBB Plaza, Before Dei Dei International Market<br/>FCT Abuja, Nigeria')
+        .bindPopup('<b>Wichtech Showroom</b><br/>& Festoon Project Company<br/>Dei Dei, Abuja')
         .openPopup();
 
       mapInstance.current = map;
@@ -79,7 +79,7 @@ export default function MapPopup({ open, onClose }: MapPopupProps) {
           <div ref={mapRef} className="w-full h-64 rounded-lg bg-muted" />
         </div>
         <p className="font-body text-sm text-muted-foreground">
-          Wichtech Festoon Project Plaza, opposite IBB Plaza, before Dei Dei International Market, FCT Abuja, Nigeria.
+          Dei Dei, Abuja, Nigeria — Visit our showroom for a premium in-person experience.
         </p>
       </DialogContent>
     </Dialog>

@@ -54,8 +54,8 @@ export default function HeroSection() {
           transition={{ delay: 0.5, duration: 1 }}
           className="font-display text-4xl md:text-6xl font-bold mb-8"
         >
-          <span className="text-crimson-sheen">Maintaining</span>{' '}
-          <span className="text-gold-shimmer">Standard</span>
+          <span className="text-crimson-sheen">Mantaining</span>{' '}
+          <span className="text-gold-shimmer">Standerd</span>
         </motion.h1>
 
         {/* CTA Button */}

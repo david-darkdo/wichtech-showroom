@@ -124,7 +124,7 @@ export default function WhoWeAre() {
             WebkitTextFillColor: 'transparent',
           }}
         >
-          Maintaining Standard. Always.
+          Mantaining Standerd. Always.
         </motion.p>
       </div>
     </section>
