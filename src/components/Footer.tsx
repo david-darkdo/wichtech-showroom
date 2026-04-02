@@ -25,6 +25,10 @@ export default function Footer() {
               <Phone className="w-4 h-4 text-accent" />
               +234 806 688 6521
             </a>
+            <a href="tel:+23407044915219" className="flex items-center gap-3 text-sm font-body text-muted-foreground hover:text-accent transition-colors">
+              <Phone className="w-4 h-4 text-accent" />
+              070 4491 5219
+            </a>
             <button
               onClick={() => setShowMap(true)}
               className="flex items-center gap-3 text-sm font-body text-muted-foreground hover:text-accent transition-colors text-left"
