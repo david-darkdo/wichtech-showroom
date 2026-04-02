@@ -37,7 +37,7 @@ export default function MapPopup({ open, onClose }: MapPopupProps) {
       });
 
       L.marker([9.1104647, 7.2638260], { icon }).addTo(map)
-        .bindPopup('<b>Wichtech Showroom</b><br/>& Festoon Project Company<br/>Dei Dei, Abuja')
+        .bindPopup('<b>Wichtech Festoon Project ShowRoom</b><br/>Opposite IBB Plaza, Before Dei Dei International Market<br/>FCT Abuja, Nigeria')
         .openPopup();
 
       mapInstance.current = map;
