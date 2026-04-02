@@ -12,8 +12,7 @@ export default function Footer() {
         <div className="max-w-lg mx-auto space-y-8">
           {/* Company Info */}
           <div className="text-center">
-            <h3 className="font-display text-xl text-gold-shimmer mb-2">Wichtech Showroom</h3>
-            <p className="font-body text-sm text-muted-foreground">& Festoon Project Company</p>
+            <h3 className="font-display text-xl text-gold-shimmer mb-2">Wichtech Festoon Project ShowRoom</h3>
           </div>
 
           {/* Contact */}
