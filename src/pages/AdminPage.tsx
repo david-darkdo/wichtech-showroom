@@ -388,11 +388,35 @@ function ProductUploader() {
 
       <div>
         <label className="font-ui text-xs text-muted-foreground block mb-1">Product Image</label>
-        <input type="file" accept="image/*" onChange={e => setProductImage(e.target.files?.[0] || null)} className="font-ui text-xs text-foreground" />
+        <label className="block w-full cursor-pointer rounded-sm border border-dashed border-border p-3 text-center hover:border-accent/50 transition-colors"
+          style={{ background: 'hsl(220 15% 10%)' }}
+        >
+          <input type="file" accept="image/*" capture="environment" onChange={e => setProductImage(e.target.files?.[0] || null)} className="hidden" />
+          {productImage ? (
+            <div className="space-y-2">
+              <img src={URL.createObjectURL(productImage)} alt="Preview" className="w-20 h-20 object-cover rounded mx-auto" />
+              <p className="font-ui text-xs text-accent truncate">{productImage.name}</p>
+            </div>
+          ) : (
+            <span className="font-ui text-xs text-muted-foreground">Tap to select product photo</span>
+          )}
+        </label>
       </div>
       <div>
         <label className="font-ui text-xs text-muted-foreground block mb-1">Finished Result Image</label>
-        <input type="file" accept="image/*" onChange={e => setFinishedImage(e.target.files?.[0] || null)} className="font-ui text-xs text-foreground" />
+        <label className="block w-full cursor-pointer rounded-sm border border-dashed border-border p-3 text-center hover:border-accent/50 transition-colors"
+          style={{ background: 'hsl(220 15% 10%)' }}
+        >
+          <input type="file" accept="image/*" capture="environment" onChange={e => setFinishedImage(e.target.files?.[0] || null)} className="hidden" />
+          {finishedImage ? (
+            <div className="space-y-2">
+              <img src={URL.createObjectURL(finishedImage)} alt="Preview" className="w-20 h-20 object-cover rounded mx-auto" />
+              <p className="font-ui text-xs text-accent truncate">{finishedImage.name}</p>
+            </div>
+          ) : (
+            <span className="font-ui text-xs text-muted-foreground">Tap to select finished result photo</span>
+          )}
+        </label>
       </div>
 
       <Textarea placeholder="Full Details" value={form.full_details} onChange={e => setForm(f => ({ ...f, full_details: e.target.value }))} className="bg-input border-border font-ui min-h-24" />
