@@ -21,36 +21,43 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<Tab>('upload');
 
   useEffect(() => {
+    let settled = false;
+    const settle = () => { if (!settled) { settled = true; setLoading(false); } };
+
+    const fetchRole = async (userId: string) => {
+      const { data } = await supabase
+        .from('user_roles' as any)
+        .select('role')
+        .eq('user_id', userId)
+        .single();
+      return (data as any)?.role || null;
+    };
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
       if (session?.user) {
-        // Check role
-        const { data } = await supabase
-          .from('user_roles' as any)
-          .select('role')
-          .eq('user_id', session.user.id)
-          .single();
-        setRole((data as any)?.role || null);
+        setRole(await fetchRole(session.user.id));
       } else {
         setRole(null);
       }
-      setLoading(false);
+      settle();
     });
 
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       if (session?.user) {
-        const { data } = await supabase
-          .from('user_roles' as any)
-          .select('role')
-          .eq('user_id', session.user.id)
-          .single();
-        setRole((data as any)?.role || null);
+        setRole(await fetchRole(session.user.id));
       }
-      setLoading(false);
+      settle();
     });
 
-    return () => subscription.unsubscribe();
+    // Timeout: stop loading after 5 seconds no matter what
+    const timeout = setTimeout(settle, 5000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timeout);
+    };
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
