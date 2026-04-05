@@ -326,13 +326,45 @@ function ProductUploader() {
   });
   const [productImage, setProductImage] = useState<File | null>(null);
   const [finishedImage, setFinishedImage] = useState<File | null>(null);
+  const [productPreview, setProductPreview] = useState<string | null>(null);
+  const [finishedPreview, setFinishedPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const uploadImage = async (file: File, path: string) => {
-    const { data, error } = await supabase.storage.from('product-images').upload(path, file, { upsert: true });
-    if (error) throw error;
-    const { data: urlData } = supabase.storage.from('product-images').getPublicUrl(data.path);
-    return urlData.publicUrl;
+  const handleFileSelect = (file: File | null, type: 'product' | 'finished') => {
+    if (!file) return;
+    console.log('[FileSelect]', type, file.name, file.type, file.size);
+    const previewUrl = URL.createObjectURL(file);
+    if (type === 'product') {
+      setProductImage(file);
+      setProductPreview(previewUrl);
+    } else {
+      setFinishedImage(file);
+      setFinishedPreview(previewUrl);
+    }
+  };
+
+  const uploadToCloudinary = async (file: File, folder: string): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', folder);
+
+    const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+    const res = await fetch(
+      `https://${projectId}.supabase.co/functions/v1/upload-image`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    );
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({ error: res.statusText }));
+      throw new Error(errData.error || errData.details || 'Upload failed');
+    }
+
+    const data = await res.json();
+    if (!data.url) throw new Error('No URL returned from upload');
+    return data.url;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -340,15 +372,18 @@ function ProductUploader() {
     if (!form.category) return toast.error('Select a category');
     setLoading(true);
     try {
-      const timestamp = Date.now();
-      let product_image = null;
-      let finished_result_image = null;
+      let product_image: string | null = null;
+      let finished_result_image: string | null = null;
 
       if (productImage) {
-        product_image = await uploadImage(productImage, `products/${timestamp}_${productImage.name}`);
+        console.log('[Upload] Uploading product image...');
+        product_image = await uploadToCloudinary(productImage, 'wichtech/products');
+        console.log('[Upload] Product image URL:', product_image);
       }
       if (finishedImage) {
-        finished_result_image = await uploadImage(finishedImage, `finished/${timestamp}_${finishedImage.name}`);
+        console.log('[Upload] Uploading finished image...');
+        finished_result_image = await uploadToCloudinary(finishedImage, 'wichtech/finished');
+        console.log('[Upload] Finished image URL:', finished_result_image);
       }
 
       const tags = form.related_tags.split(',').map(t => t.trim()).filter(Boolean);
@@ -369,7 +404,10 @@ function ProductUploader() {
       setForm({ product_name: '', item_code: '', price: '', category: '', full_details: '', related_tags: '' });
       setProductImage(null);
       setFinishedImage(null);
+      setProductPreview(null);
+      setFinishedPreview(null);
     } catch (err: any) {
+      console.error('[Upload] Error:', err);
       toast.error(err.message || 'Upload failed');
     } finally {
       setLoading(false);
@@ -398,11 +436,11 @@ function ProductUploader() {
         <label className="block w-full cursor-pointer rounded-sm border border-dashed border-border p-3 text-center hover:border-accent/50 transition-colors"
           style={{ background: 'hsl(220 15% 10%)' }}
         >
-          <input type="file" accept="image/*" capture="environment" onChange={e => setProductImage(e.target.files?.[0] || null)} className="hidden" />
-          {productImage ? (
+          <input type="file" onChange={e => handleFileSelect(e.target.files?.[0] || null, 'product')} className="hidden" />
+          {productPreview ? (
             <div className="space-y-2">
-              <img src={URL.createObjectURL(productImage)} alt="Preview" className="w-20 h-20 object-cover rounded mx-auto" />
-              <p className="font-ui text-xs text-accent truncate">{productImage.name}</p>
+              <img src={productPreview} alt="Preview" className="w-20 h-20 object-cover rounded mx-auto" />
+              <p className="font-ui text-xs text-accent truncate">{productImage?.name}</p>
             </div>
           ) : (
             <span className="font-ui text-xs text-muted-foreground">Tap to select product photo</span>
@@ -414,11 +452,11 @@ function ProductUploader() {
         <label className="block w-full cursor-pointer rounded-sm border border-dashed border-border p-3 text-center hover:border-accent/50 transition-colors"
           style={{ background: 'hsl(220 15% 10%)' }}
         >
-          <input type="file" accept="image/*" capture="environment" onChange={e => setFinishedImage(e.target.files?.[0] || null)} className="hidden" />
-          {finishedImage ? (
+          <input type="file" onChange={e => handleFileSelect(e.target.files?.[0] || null, 'finished')} className="hidden" />
+          {finishedPreview ? (
             <div className="space-y-2">
-              <img src={URL.createObjectURL(finishedImage)} alt="Preview" className="w-20 h-20 object-cover rounded mx-auto" />
-              <p className="font-ui text-xs text-accent truncate">{finishedImage.name}</p>
+              <img src={finishedPreview} alt="Preview" className="w-20 h-20 object-cover rounded mx-auto" />
+              <p className="font-ui text-xs text-accent truncate">{finishedImage?.name}</p>
             </div>
           ) : (
             <span className="font-ui text-xs text-muted-foreground">Tap to select finished result photo</span>
