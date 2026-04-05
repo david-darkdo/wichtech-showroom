@@ -25,15 +25,20 @@ export default function AdminPage() {
     const settle = () => { if (!settled) { settled = true; setLoading(false); } };
 
     const fetchRole = async (userId: string) => {
-      const { data } = await supabase
+      console.log('[Auth] Fetching role for user:', userId);
+      const { data, error } = await supabase
         .from('user_roles' as any)
         .select('role')
         .eq('user_id', userId)
         .single();
-      return (data as any)?.role || null;
+      if (error) console.warn('[Auth] Role fetch error:', error.message);
+      const role = (data as any)?.role || null;
+      console.log('[Auth] User role:', role);
+      return role;
     };
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      console.log('[Auth] State change:', _event, !!session);
       setSession(session);
       if (session?.user) {
         setRole(await fetchRole(session.user.id));
@@ -44,6 +49,7 @@ export default function AdminPage() {
     });
 
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      console.log('[Auth] getSession result:', !!session);
       setSession(session);
       if (session?.user) {
         setRole(await fetchRole(session.user.id));
@@ -51,12 +57,8 @@ export default function AdminPage() {
       settle();
     });
 
-    // Timeout: stop loading after 5 seconds no matter what
-    const timeout = setTimeout(settle, 5000);
-
     return () => {
       subscription.unsubscribe();
-      clearTimeout(timeout);
     };
   }, []);
 
