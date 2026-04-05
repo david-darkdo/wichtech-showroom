@@ -479,6 +479,9 @@ function ProductUploader() {
 }
 
 function ProductList() {
+  const queryClient = useQueryClient();
+  const [editingId, setEditingId] = useState<string | null>(null);
+
   const { data: products = [] } = useQuery({
     queryKey: ['admin-products'],
     queryFn: async () => {
@@ -491,17 +494,140 @@ function ProductList() {
     <div className="space-y-3">
       <h2 className="font-display text-lg text-foreground">Products ({products.length})</h2>
       {products.map((p: any) => (
-        <div key={p.id} className="p-3 rounded-lg" style={{ background: 'hsl(220 15% 12%)', border: '1px solid hsl(42 30% 20% / 0.2)' }}>
-          <div className="flex justify-between">
-            <div>
-              <p className="font-body text-sm text-foreground">{p.product_name}</p>
-              <p className="font-ui text-[10px] text-muted-foreground">{p.item_code} · {p.category}</p>
+        editingId === p.id ? (
+          <ProductEditor key={p.id} product={p} onClose={() => setEditingId(null)} onSaved={() => { setEditingId(null); queryClient.invalidateQueries({ queryKey: ['admin-products'] }); }} />
+        ) : (
+          <div key={p.id} className="p-3 rounded-lg" style={{ background: 'hsl(220 15% 12%)', border: '1px solid hsl(42 30% 20% / 0.2)' }}>
+            <div className="flex justify-between items-start">
+              <div className="flex gap-3 flex-1 min-w-0">
+                {p.product_image && <img src={p.product_image} alt="" className="w-12 h-12 rounded object-cover flex-shrink-0" />}
+                <div className="min-w-0">
+                  <p className="font-body text-sm text-foreground">{p.product_name}</p>
+                  <p className="font-ui text-[10px] text-muted-foreground">{p.item_code} · {p.category}</p>
+                </div>
+              </div>
+              <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                <p className="font-ui text-sm text-accent">₦{Number(p.price).toLocaleString()}</p>
+                <button onClick={() => setEditingId(p.id)} className="font-ui text-[10px] uppercase tracking-wider px-2 py-0.5 rounded"
+                  style={{ background: 'hsl(42 70% 55% / 0.1)', color: 'hsl(42 70% 55%)', border: '1px solid hsl(42 70% 55% / 0.3)' }}>
+                  Edit
+                </button>
+              </div>
             </div>
-            <p className="font-ui text-sm text-accent">₦{Number(p.price).toLocaleString()}</p>
           </div>
-        </div>
+        )
       ))}
     </div>
+  );
+}
+
+function ProductEditor({ product, onClose, onSaved }: { product: any; onClose: () => void; onSaved: () => void }) {
+  const [form, setForm] = useState({
+    product_name: product.product_name || '',
+    item_code: product.item_code || '',
+    price: String(product.price || ''),
+    category: product.category || '',
+    full_details: product.full_details || '',
+    related_tags: (product.related_tags || []).join(', '),
+  });
+  const [productImage, setProductImage] = useState<File | null>(null);
+  const [finishedImage, setFinishedImage] = useState<File | null>(null);
+  const [productPreview, setProductPreview] = useState<string | null>(product.product_image || null);
+  const [finishedPreview, setFinishedPreview] = useState<string | null>(product.finished_result_image || null);
+  const [saving, setSaving] = useState(false);
+
+  const handleFileSelect = (file: File | null, type: 'product' | 'finished') => {
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    if (type === 'product') { setProductImage(file); setProductPreview(url); }
+    else { setFinishedImage(file); setFinishedPreview(url); }
+  };
+
+  const uploadToCloudinary = async (file: File, folder: string): Promise<string> => {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('folder', folder);
+    const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+    const res = await fetch(`https://${projectId}.supabase.co/functions/v1/upload-image`, { method: 'POST', body: fd });
+    if (!res.ok) { const err = await res.json().catch(() => ({ error: res.statusText })); throw new Error(err.error || 'Upload failed'); }
+    const data = await res.json();
+    if (!data.url) throw new Error('No URL returned');
+    return data.url;
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.category) return toast.error('Select a category');
+    setSaving(true);
+    try {
+      let product_image = product.product_image;
+      let finished_result_image = product.finished_result_image;
+
+      if (productImage) product_image = await uploadToCloudinary(productImage, 'wichtech/products');
+      if (finishedImage) finished_result_image = await uploadToCloudinary(finishedImage, 'wichtech/finished');
+
+      const tags = form.related_tags.split(',').map(t => t.trim()).filter(Boolean);
+
+      const { error } = await supabase.from('products' as any).update({
+        product_name: form.product_name,
+        item_code: form.item_code,
+        price: parseFloat(form.price),
+        category: form.category,
+        product_image,
+        finished_result_image,
+        full_details: form.full_details,
+        related_tags: tags,
+      } as any).eq('id', product.id);
+
+      if (error) throw error;
+      toast.success('Product updated!');
+      onSaved();
+    } catch (err: any) {
+      console.error('[Edit] Error:', err);
+      toast.error(err.message || 'Update failed');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSave} className="p-4 rounded-lg space-y-3" style={{ background: 'hsl(220 15% 12%)', border: '1px solid hsl(42 70% 55% / 0.3)' }}>
+      <div className="flex justify-between items-center">
+        <h3 className="font-display text-sm text-gold-shimmer">Edit Product</h3>
+        <button type="button" onClick={onClose} className="font-ui text-xs text-muted-foreground hover:text-foreground">Cancel</button>
+      </div>
+      <Input placeholder="Product Name" value={form.product_name} onChange={e => setForm(f => ({ ...f, product_name: e.target.value }))} required className="bg-input border-border font-ui text-sm" />
+      <Input placeholder="Item Code" value={form.item_code} onChange={e => setForm(f => ({ ...f, item_code: e.target.value }))} required className="bg-input border-border font-ui text-sm" />
+      <Input type="number" placeholder="Price (₦)" value={form.price} onChange={e => setForm(f => ({ ...f, price: e.target.value }))} required className="bg-input border-border font-ui text-sm" />
+      <Select value={form.category} onValueChange={v => setForm(f => ({ ...f, category: v }))}>
+        <SelectTrigger className="bg-input border-border font-ui text-sm"><SelectValue placeholder="Category" /></SelectTrigger>
+        <SelectContent>
+          {['Plumbing', 'Paint', 'Electrical', 'Roofing'].map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+        </SelectContent>
+      </Select>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="font-ui text-[10px] text-muted-foreground block mb-1">Product Image</label>
+          <label className="block cursor-pointer rounded-sm border border-dashed border-border p-2 text-center hover:border-accent/50 transition-colors" style={{ background: 'hsl(220 15% 10%)' }}>
+            <input type="file" onChange={e => handleFileSelect(e.target.files?.[0] || null, 'product')} className="hidden" />
+            {productPreview ? <img src={productPreview} alt="" className="w-16 h-16 object-cover rounded mx-auto" /> : <span className="font-ui text-[10px] text-muted-foreground">Select</span>}
+          </label>
+        </div>
+        <div>
+          <label className="font-ui text-[10px] text-muted-foreground block mb-1">Finished Image</label>
+          <label className="block cursor-pointer rounded-sm border border-dashed border-border p-2 text-center hover:border-accent/50 transition-colors" style={{ background: 'hsl(220 15% 10%)' }}>
+            <input type="file" onChange={e => handleFileSelect(e.target.files?.[0] || null, 'finished')} className="hidden" />
+            {finishedPreview ? <img src={finishedPreview} alt="" className="w-16 h-16 object-cover rounded mx-auto" /> : <span className="font-ui text-[10px] text-muted-foreground">Select</span>}
+          </label>
+        </div>
+      </div>
+      <Textarea placeholder="Full Details" value={form.full_details} onChange={e => setForm(f => ({ ...f, full_details: e.target.value }))} className="bg-input border-border font-ui text-sm min-h-20" />
+      <Input placeholder="Tags (comma separated)" value={form.related_tags} onChange={e => setForm(f => ({ ...f, related_tags: e.target.value }))} className="bg-input border-border font-ui text-sm" />
+      <button type="submit" disabled={saving} className="w-full py-2 rounded-sm font-ui text-xs tracking-widest uppercase disabled:opacity-50"
+        style={{ background: 'linear-gradient(135deg, hsl(0 60% 30%), hsl(0 60% 38%))', border: '1px solid hsl(42 70% 55% / 0.4)', color: 'hsl(42 70% 55%)' }}>
+        {saving ? 'Saving...' : 'Save Changes'}
+      </button>
+    </form>
   );
 }
 
