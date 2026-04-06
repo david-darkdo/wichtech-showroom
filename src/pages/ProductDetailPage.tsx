@@ -126,11 +126,6 @@ export default function ProductDetailPage() {
               <img src={product.finished_result_image} alt={`${product.product_name} in use`} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
             </div>
-            <div className="px-4 py-2"
-              style={{ background: 'linear-gradient(180deg, hsl(220 15% 10%), hsl(220 15% 8%))' }}
-            >
-              <p className="font-ui text-[10px] uppercase tracking-widest text-accent/60">Finished Result</p>
-            </div>
           </motion.div>
         )}
 
