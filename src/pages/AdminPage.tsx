@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
@@ -7,68 +7,32 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { Users, BarChart3, Package, Upload, LogOut, Eye, EyeOff, ShieldCheck, UserCog, MessageCircle } from 'lucide-react';
 import type { ProductCategory } from '@/lib/types';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 type Tab = 'products' | 'users' | 'analytics' | 'upload' | 'staff' | 'customers';
 
 export default function AdminPage() {
-  const [session, setSession] = useState<any>(null);
-  const [role, setRole] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { session, role, loading } = useAdminAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>('upload');
 
-  useEffect(() => {
-    let settled = false;
-    const settle = () => { if (!settled) { settled = true; setLoading(false); } };
-
-    const fetchRole = async (userId: string) => {
-      console.log('[Auth] Fetching role for user:', userId);
-      const { data, error } = await supabase
-        .from('user_roles' as any)
-        .select('role')
-        .eq('user_id', userId)
-        .single();
-      if (error) console.warn('[Auth] Role fetch error:', error.message);
-      const role = (data as any)?.role || null;
-      console.log('[Auth] User role:', role);
-      return role;
-    };
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      console.log('[Auth] State change:', _event, !!session);
-      setSession(session);
-      if (session?.user) {
-        setRole(await fetchRole(session.user.id));
-      } else {
-        setRole(null);
-      }
-      settle();
-    });
-
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      console.log('[Auth] getSession result:', !!session);
-      setSession(session);
-      if (session?.user) {
-        setRole(await fetchRole(session.user.id));
-      }
-      settle();
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      console.log('[Auth] Attempting sign in:', { email });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
+      console.log('[Auth] Login success:', {
+        isAuthenticated: !!data.session,
+        sessionStatus: data.session ? 'present' : 'missing',
+        userId: data.user?.id ?? null,
+      });
     } catch (err: any) {
+      console.error('[Auth] Login error:', err);
       toast.error(err.message || 'Login failed');
     } finally {
       setLoginLoading(false);
@@ -76,9 +40,13 @@ export default function AdminPage() {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setSession(null);
-    setRole(null);
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('[Auth] Logout error:', error);
+      toast.error(error.message || 'Sign out failed');
+      return;
+    }
+    console.log('[Auth] Logout complete:', { sessionStatus: 'cleared' });
   };
 
   if (loading) {
