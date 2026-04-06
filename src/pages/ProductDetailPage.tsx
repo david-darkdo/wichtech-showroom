@@ -72,30 +72,60 @@ export default function ProductDetailPage() {
       <GoldFiligreeOverlay />
       <Navbar />
       <main className="relative z-10 pt-16">
-        {/* Product Image */}
+        {/* Product Image — Luxury 3D Card */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="w-full aspect-square overflow-hidden"
+          initial={{ opacity: 0, rotateX: 8, scale: 0.95 }}
+          animate={{ opacity: 1, rotateX: 0, scale: 1 }}
+          transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+          className="mx-4 mt-4 rounded-xl overflow-hidden"
+          style={{
+            perspective: '1200px',
+            boxShadow: '0 20px 60px -15px hsl(0 0% 0% / 0.6), 0 0 40px -10px hsl(42 70% 55% / 0.15), inset 0 1px 0 hsl(42 70% 55% / 0.1)',
+            border: '1.5px solid hsl(42 30% 25% / 0.4)',
+            background: 'linear-gradient(145deg, hsl(220 15% 14%), hsl(220 15% 9%))',
+          }}
         >
-          {product.product_image ? (
-            <img src={product.product_image} alt={product.product_name} className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full bg-muted flex items-center justify-center">
-              <p className="text-muted-foreground font-body">No image</p>
-            </div>
-          )}
+          <div className="relative aspect-square overflow-hidden">
+            {product.product_image ? (
+              <motion.img
+                src={product.product_image}
+                alt={product.product_name}
+                className="w-full h-full object-cover"
+                whileHover={{ scale: 1.04 }}
+                transition={{ duration: 0.5 }}
+              />
+            ) : (
+              <div className="w-full h-full bg-muted flex items-center justify-center">
+                <p className="text-muted-foreground font-body">No image</p>
+              </div>
+            )}
+            {/* Glossy overlay for 3D depth */}
+            <div className="absolute inset-0 pointer-events-none"
+              style={{ background: 'linear-gradient(135deg, hsl(42 70% 90% / 0.08) 0%, transparent 50%, hsl(220 15% 5% / 0.2) 100%)' }}
+            />
+          </div>
+          {/* Gold accent bar */}
+          <div className="h-[2px]" style={{ background: 'linear-gradient(90deg, transparent, hsl(42 70% 55% / 0.5), transparent)' }} />
+          <div className="px-4 py-2.5 flex items-center gap-2"
+            style={{ background: 'linear-gradient(180deg, hsl(220 15% 11%), hsl(220 15% 9%))' }}
+          >
+            <div className="w-1.5 h-1.5 rounded-full" style={{ background: 'hsl(42 70% 55%)' }} />
+            <p className="font-ui text-[10px] uppercase tracking-[0.2em] text-accent/70">Product View</p>
+          </div>
         </motion.div>
 
-        {/* Finished Result Image */}
+        {/* Finished Result Image — Clean, full-bleed */}
         {product.finished_result_image && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="w-full aspect-video overflow-hidden"
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="w-full mt-6 overflow-hidden"
           >
-            <img src={product.finished_result_image} alt={`${product.product_name} in use`} className="w-full h-full object-cover" />
+            <div className="relative aspect-video overflow-hidden">
+              <img src={product.finished_result_image} alt={`${product.product_name} in use`} className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+            </div>
             <div className="px-4 py-2"
               style={{ background: 'linear-gradient(180deg, hsl(220 15% 10%), hsl(220 15% 8%))' }}
             >
