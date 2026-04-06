@@ -24,6 +24,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Suspense fallback={<WichtechLoader />}>
+            <ScrollToTop />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/category/:category" element={<CategoryPage />} />
